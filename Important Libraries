@@ -1,0 +1,117 @@
+------------------Flask------------------
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return "Hello, EY!"
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+------------ jsonify -----------------------
+
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/greet', methods=['POST'])
+def greet():
+    data = request.get_json()  # Get JSON data from the request
+    name = data.get('name', 'Guest')  # Extract 'name', default to 'Guest'
+    return jsonify({"message": f"Hello, {name}!"})  # Return response as JSON
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+-------------- pandas ----------------
+
+import pandas as pd
+
+# Creating a DataFrame
+df = pd.DataFrame({
+    "Name": ["Alice", "Bob", "Charlie"],
+    "Age": [25, 30, 35],
+    "City": ["New York", "London", "Tokyo"]
+})
+
+# Saving to a CSV file
+df.to_csv("people.csv", index=False)
+
+# Reading from a CSV file
+df_read = pd.read_csv("people.csv")
+print(df_read.head())
+
+# Select a single column
+print(df["Salary"])
+
+# Filter rows where Age > 30
+filtered_df = df[df["Age"] > 30]
+
+# Select specific rows & columns
+df.loc[1, "Salary"]   # Access row index 1, column 'Salary'
+df.iloc[1, 2]         # Access row 1, column 2 (zero-based index)
+
+df.fillna(0, inplace=True)   # Replace NaN with 0
+df.dropna(inplace=True)      # Remove rows with NaN values
+df["Salary"].fillna(df["Salary"].mean(), inplace=True)  # Replace NaN with column mean
+
+
+
+-------------unittest-----------------
+import unittest
+
+# Function to test
+def add(a, b):
+    return a + b
+
+# Test Case
+class TestMathOperations(unittest.TestCase):
+    def test_add(self):
+        self.assertEqual(add(2, 3), 5)  # Check if 2+3 = 5
+
+if __name__ == "__main__":
+    unittest.main()
+
+
+-------------- patch ------------------
+from unittest.mock import patch
+import requests
+
+def get_weather(city):
+    response = requests.get(f"https://api.weather.com/{city}")
+    return response.json()
+
+# Test with Mocking
+@patch("requests.get")
+def test_get_weather(mock_get):
+    mock_get.return_value.json.return_value = {"temperature": 25}
+    assert get_weather("London") == {"temperature": 25}
+
+---------------MagicMock ----------------------
+
+from unittest.mock import MagicMock
+
+# Create a MagicMock instance
+mock_obj = MagicMock()
+
+# Mocking a method call
+mock_obj.some_method.return_value = "Hello, Mock!"
+
+# Calling the mocked method
+print(mock_obj.some_method())  # Output: "Hello, Mock!"
+
+# Checking if method was called
+mock_obj.some_method.assert_called_once()
+
+
+#mock v/s MagicMock
+
+from unittest.mock import Mock, MagicMock
+
+mock = Mock()
+magic_mock = MagicMock()
+
+print(len(magic_mock))  # Works! (Returns a mock int)
+print(len(mock))        # Error (TypeError: object of type 'Mock' has no len())
